@@ -2,19 +2,38 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Mitchell Schauer | Systems Integration Architect">
-  
-  <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <span class="font-mono text-blue-400 font-bold tracking-tighter text-xl">MS.ARCHITECT</span>
-      <div class="hidden md:flex gap-8 text-sm font-mono text-gray-400">
-        <a href="#infrastructure" class="hover:text-white transition-colors">/Infrastructure</a>
-        <a href="#industrial" class="hover:text-white transition-colors">/Industrial</a>
-        <a href="#research" class="hover:text-white transition-colors">/Research</a>
-        <a href="#contact" class="hover:text-teal-400 transition-colors">/Connect</a>
+<Layout title="Mitchell Schauer | Systems Integration & AI Engineer">
+  <section class="py-20 px-6 max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+    <div class="text-center md:text-left flex-1">
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white">
+        Mitchell Schauer
+      </h1>
+      <p class="mt-4 text-2xl text-blue-400 font-medium">
+        Systems Integration | AI Infrastructure | Automation Architect
+      </p>
+      <p class="mt-4 text-gray-400 max-w-2xl text-lg">
+        Architecting high-level production workflows for enterprise defense and building edge-deployed AI ecosystems for the next generation of autonomous living.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+        <a href="https://github.com/mitchschauer" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center transition-all border border-gray-700">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12a12 12 0 008.205 11.434c.6.113.82-.26.82-.577v-2.024c-3.338.726-4.033-1.612-4.033-1.612-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.24 1.838 1.24 1.07 1.835 2.807 1.305 3.492.998.108-.775.42-1.305.763-1.604-2.665-.304-5.467-1.332-5.467-5.933 0-1.31.47-2.382 1.236-3.22-.124-.303-.536-1.523.118-3.176 0 0 1.008-.322 3.3 1.23a11.51 11.51 0 013.003-.403c1.02.005 2.048.137 3.003.403 2.29-1.552 3.296-1.23 3.296-1.23.656 1.653.244 2.873.12 3.176.77.838 1.236 1.91 1.236 3.22 0 4.61-2.807 5.625-5.48 5.922.432.373.816 1.102.816 2.222v3.293c0 .32.216.694.825.576A12.006 12.006 0 0024 12c0-6.63-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/mitch-schauer/" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center transition-all">
+          LinkedIn
+        </a>
+        <a href="/resume.pdf" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center transition-all">
+          View Resume
+        </a>
       </div>
     </div>
-  </nav>
+    <div class="flex-1 flex justify-center md:justify-end">
+      <div class="relative">
+        <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-teal-400 rounded-full blur opacity-25"></div>
+        <img src="/profile.jpg" alt="Mitchell Schauer" class="relative w-64 h-64 rounded-full object-cover border-4 border-gray-900 shadow-2xl" />
+      </div>
+    </div>
+  </section>
 
   <main class="pt-32">
     <section class="px-6 max-w-7xl mx-auto mb-32">
@@ -42,7 +61,7 @@ import Layout from '../layouts/Layout.astro';
             <p class="text-blue-400">// MISSION CRITICAL METRICS</p>
             <p class="text-white mt-2">Scale Factor: <span class="text-green-400">10x Production Increase</span></p>
             <p class="text-white">Lead Time: <span class="text-green-400">92% Reduction</span></p>
-            <p class="text-white">Contract Support: <span class="text-green-400">$100B+ Portfolio</span></p>
+            <p class="text-white">Contract Support: <span class="text-green-400">$3B+ Portfolio</span></p>
             <p class="text-white">System Uptime: <span class="text-green-400">99.99% (Personal Lab)</span></p>
             <div class="mt-6 p-4 bg-black/50 rounded-lg border border-gray-700">
               <p class="text-gray-500">Active Node: Liverpool_Site_Beta</p>
@@ -168,7 +187,7 @@ import Layout from '../layouts/Layout.astro';
       <h2 class="text-2xl font-bold text-white mb-8">Architecting the future of systems.</h2>
       <div class="flex justify-center gap-8 mb-12">
         <a href="mailto:schauer.mitchell@gmail.com" class="text-gray-400 hover:text-white transition-colors">Email</a>
-        <a href="https://linkedin.com/in/mitchell-schauer" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/mitch-schauer/" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
         <a href="https://github.com/mitchschauer" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
       </div>
       <p class="text-gray-600 text-sm">© 2026 Mitchell Schauer | Designed for Decentralization & Resilience</p>
