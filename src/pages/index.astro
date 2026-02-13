@@ -2,142 +2,176 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Mitchell Schauer | Systems Integration & AI Engineer">
-  <section class="py-20 px-6 max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-    <div class="text-center md:text-left flex-1">
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white">
-        Mitchell Schauer
-      </h1>
-      <p class="mt-4 text-2xl text-blue-400 font-medium">
-        Systems Integration | AI Infrastructure | Automation Architect
-      </p>
-      <p class="mt-4 text-gray-400 max-w-2xl text-lg">
-        Architecting high-level production workflows for enterprise defense and building edge-deployed AI ecosystems for the next generation of autonomous living.
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
-        <a href="https://github.com/mitchschauer" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center transition-all border border-gray-700">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12a12 12 0 008.205 11.434c.6.113.82-.26.82-.577v-2.024c-3.338.726-4.033-1.612-4.033-1.612-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.24 1.838 1.24 1.07 1.835 2.807 1.305 3.492.998.108-.775.42-1.305.763-1.604-2.665-.304-5.467-1.332-5.467-5.933 0-1.31.47-2.382 1.236-3.22-.124-.303-.536-1.523.118-3.176 0 0 1.008-.322 3.3 1.23a11.51 11.51 0 013.003-.403c1.02.005 2.048.137 3.003.403 2.29-1.552 3.296-1.23 3.296-1.23.656 1.653.244 2.873.12 3.176.77.838 1.236 1.91 1.236 3.22 0 4.61-2.807 5.625-5.48 5.922.432.373.816 1.102.816 2.222v3.293c0 .32.216.694.825.576A12.006 12.006 0 0024 12c0-6.63-5.373-12-12-12z"/></svg>
-          GitHub
-        </a>
-        <a href="https://linkedin.com/in/mitchell-schauer" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center transition-all">
-          LinkedIn
-        </a>
-        <a href="/resume.pdf" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center transition-all">
-          View Resume
-        </a>
+<Layout title="Mitchell Schauer | Systems Integration Architect">
+  
+  <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span class="font-mono text-blue-400 font-bold tracking-tighter text-xl">MS.ARCHITECT</span>
+      <div class="hidden md:flex gap-8 text-sm font-mono text-gray-400">
+        <a href="#infrastructure" class="hover:text-white transition-colors">/Infrastructure</a>
+        <a href="#industrial" class="hover:text-white transition-colors">/Industrial</a>
+        <a href="#research" class="hover:text-white transition-colors">/Research</a>
+        <a href="#contact" class="hover:text-teal-400 transition-colors">/Connect</a>
       </div>
     </div>
-    <div class="flex-1 flex justify-center md:justify-end">
-      <div class="relative">
-        <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-teal-400 rounded-full blur opacity-25"></div>
-        <img src="/profile.jpg" alt="Mitchell Schauer" class="relative w-64 h-64 rounded-full object-cover border-4 border-gray-900 shadow-2xl" />
-      </div>
-    </div>
-  </section>
+  </nav>
 
-  <section class="py-24 px-6 bg-gray-900/50">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold text-center mb-16 text-white">Technical Architecture</h2>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700">
-          <div class="text-blue-400 mb-4 text-3xl">📡</div>
-          <h3 class="text-xl font-bold text-white mb-4">Infrastructure & Networking</h3>
-          <ul class="text-gray-400 space-y-2 text-sm">
-            <li>• pfSense/OPNsense Firewall Architect</li>
-            <li>• VLAN Segmentation & Zero-Trust Access</li>
-            <li>• Proxmox Clusters & LXC Virtualization</li>
-            <li>• Multi-WAN Failover & Site-to-Site VPN</li>
-          </ul>
-        </div>
-        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700">
-          <div class="text-teal-400 mb-4 text-3xl">🧠</div>
-          <h3 class="text-xl font-bold text-white mb-4">AI & Edge Intelligence</h3>
-          <ul class="text-gray-400 space-y-2 text-sm">
-            <li>• Local LLM Inference (Ollama/OpenWebUI)</li>
-            <li>• PyTorch Computer Vision & Regression</li>
-            <li>• Edge TTS & STT Offline Operations</li>
-            <li>• ComfyUI & Generative AI Pipelines</li>
-          </ul>
-        </div>
-        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700">
-          <div class="text-purple-400 mb-4 text-3xl">⚙️</div>
-          <h3 class="text-xl font-bold text-white mb-4">Systems Integration</h3>
-          <ul class="text-gray-400 space-y-2 text-sm">
-            <li>• PLC-to-IoT Legacy Conversion</li>
-            <li>• n8n Event-Driven Automation</li>
-            <li>• ERP Assistant Development (SAP/Solumina)</li>
-            <li>• Azure Cloud Migration & Management</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-24 px-6 max-w-6xl mx-auto">
-    <div class="bg-gradient-to-br from-blue-900/20 to-teal-900/20 rounded-3xl p-8 md:p-12 border border-blue-500/20">
-      <div class="flex flex-col lg:flex-row gap-12">
-        <div class="flex-1">
-          <span class="text-teal-400 font-mono text-sm uppercase tracking-widest">Active Research</span>
-          <h2 class="text-4xl font-bold text-white mt-2 mb-6">The Mobile Autonomy Lab</h2>
-          <p class="text-gray-300 mb-6 text-lg">
-            Converting a 39' bus into a self-sustaining, AI-integrated residential environment. This project serves as a live testing ground for offline-first systems, microgrid management, and edge intelligence.
+  <main class="pt-32">
+    <section class="px-6 max-w-7xl mx-auto mb-32">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h1 class="text-7xl font-extrabold text-white leading-none mb-8">
+            Systems <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">Integration</span> Architect
+          </h1>
+          <p class="text-xl text-gray-400 leading-relaxed mb-8">
+            Specializing in the convergence of industrial hardware and modern secure infrastructure. I bridge legacy systems with edge-intelligence to create high-velocity production ecosystems.
           </p>
-          <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-black/40 p-4 rounded-lg">
-              <h4 class="text-white font-bold mb-1">Grid Independent</h4>
-              <p class="text-gray-400 text-xs">48V Battery Array, Solar, & Bio-digestion</p>
+          <div class="flex gap-4">
+             <a href="/resume.pdf" class="bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all">Download Dossier</a>
+             <a href="https://github.com/mitchschauer" class="border border-gray-700 text-white px-8 py-4 rounded-full font-bold hover:bg-gray-800 transition-all">Source Code</a>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -inset-4 bg-blue-500/10 blur-3xl rounded-full"></div>
+          <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl font-mono text-sm">
+            <div class="flex gap-2 mb-6">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-            <div class="bg-black/40 p-4 rounded-lg">
-              <h4 class="text-white font-bold mb-1">Local Intelligence</h4>
-              <p class="text-gray-400 text-xs">Air-gapped HomeAssistant & LLM control</p>
+            <p class="text-blue-400">// MISSION CRITICAL METRICS</p>
+            <p class="text-white mt-2">Scale Factor: <span class="text-green-400">10x Production Increase</span></p>
+            <p class="text-white">Lead Time: <span class="text-green-400">92% Reduction</span></p>
+            <p class="text-white">Contract Support: <span class="text-green-400">$100B+ Portfolio</span></p>
+            <p class="text-white">System Uptime: <span class="text-green-400">99.99% (Personal Lab)</span></p>
+            <div class="mt-6 p-4 bg-black/50 rounded-lg border border-gray-700">
+              <p class="text-gray-500">Active Node: Liverpool_Site_Beta</p>
+              <p class="text-gray-500">Security Layer: OPNsense + ZeroTrust</p>
             </div>
           </div>
         </div>
-        <div class="flex-1 bg-gray-900 rounded-xl border border-gray-700 p-6 font-mono text-xs text-green-400 overflow-hidden">
-          <p class="mb-2">// Current State: Mobile HomeLab Cluster</p>
-          <p class="text-gray-500">Node_1 [N100]: TrueNAS (8TB SSD) + n8n</p>
-          <p class="text-gray-500">Node_2 [N100]: PiHole + HomeAssistant VM</p>
-          <p class="text-white">Node_AI [4080 Super]: Ollama + OpenWebUI (Active)</p>
-          <p class="mt-4">// Security Protocols</p>
-          <p class="text-blue-400">-> Wireguard VPN Tunneling (Remote Access)</p>
-          <p class="text-blue-400">-> VLAN 300: Isolated IOT (No WAN Access)</p>
-          <p class="text-blue-400">-> Automated TLS via Reverse Proxy</p>
-          <p class="mt-4 animate-pulse text-white">_ [System monitoring live...]</p>
-        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="py-24 px-6 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-white mb-12 text-center">Engineering Leadership</h2>
-    <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
-      <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-        <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-700 bg-gray-900 text-blue-400 group-[.is-active]:text-teal-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-          🚀
-        </div>
-        <div class="w-[calc(100%-4rem)] md:w-[45%] p-6 rounded-xl border border-gray-800 bg-gray-900/50 shadow-xl">
-          <div class="flex items-center justify-between mb-1">
-            <time class="font-mono text-xs text-blue-400">2024 – Present</time>
+    <section id="infrastructure" class="py-24 bg-gray-900/30">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-white mb-16">Platform Engineering & Networking</h2>
+        <div class="grid lg:grid-cols-3 gap-8">
+          <div class="bg-gray-900 p-8 rounded-3xl border border-gray-800 hover:border-blue-500/50 transition-all">
+            <h3 class="text-2xl font-bold text-white mb-4">Compute & Virtualization</h3>
+            <p class="text-gray-400 mb-6">Architecting high-availability clusters for industrial and edge applications.</p>
+            <ul class="space-y-3 text-sm text-gray-300">
+              <li class="flex items-center"><span class="text-blue-500 mr-2">/</span> Proxmox Hypervisor Clustering</li>
+              <li class="flex items-center"><span class="text-blue-500 mr-2">/</span> LXC/Docker Orchestration</li>
+              <li class="flex items-center"><span class="text-blue-500 mr-2">/</span> Git-Ops Deployment Pipelines</li>
+              <li class="flex items-center"><span class="text-blue-500 mr-2">/</span> ZFS Storage Management</li>
+            </ul>
           </div>
-          <div class="text-white font-bold">Lockheed Martin · Senior Project Engineer</div>
-          <p class="text-gray-400 text-sm mt-2">Architecting enterprise-level production workflows. Developed VLAN-isolated sublan architectures for international systems and integrated AI inspection into live production lines. Reduced lead times for TPY program from **2 years to 2 months**.</p>
+          <div class="bg-gray-900 p-8 rounded-3xl border border-gray-800 hover:border-teal-500/50 transition-all">
+            <h3 class="text-2xl font-bold text-white mb-4">Security & SDN</h3>
+            <p class="text-gray-400 mb-6">Designing zero-trust network environments with multi-layer segmentation.</p>
+            <ul class="space-y-3 text-sm text-gray-300">
+              <li class="flex items-center"><span class="text-teal-500 mr-2">/</span> OPNsense/pfSense Architect</li>
+              <li class="flex items-center"><span class="text-teal-500 mr-2">/</span> VLAN & Sublan Segmentation</li>
+              <li class="flex items-center"><span class="text-teal-500 mr-2">/</span> Wireguard Tunneling</li>
+              <li class="flex items-center"><span class="text-teal-500 mr-2">/</span> Automated TLS/SSL Termination</li>
+            </ul>
+          </div>
+          <div class="bg-gray-900 p-8 rounded-3xl border border-gray-800 hover:border-purple-500/50 transition-all">
+            <h3 class="text-2xl font-bold text-white mb-4">Edge Intelligence</h3>
+            <p class="text-gray-400 mb-6">Local-first AI deployment for autonomous decision making and HMI.</p>
+            <ul class="space-y-3 text-sm text-gray-300">
+              <li class="flex items-center"><span class="text-purple-500 mr-2">/</span> Ollama (Offline LLM) Inference</li>
+              <li class="flex items-center"><span class="text-purple-500 mr-2">/</span> PyTorch Computer Vision</li>
+              <li class="flex items-center"><span class="text-purple-500 mr-2">/</span> Custom HMI/Dashboard Design</li>
+              <li class="flex items-center"><span class="text-purple-500 mr-2">/</span> MQTT/REST IoT Pipelines</li>
+            </ul>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-        <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-700 bg-gray-900 text-gray-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-          🛰️
+    <section id="industrial" class="py-24 px-6 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row gap-16 items-start">
+        <div class="flex-1">
+          <h2 class="text-5xl font-bold text-white mb-8">Industrial Impact</h2>
+          <div class="space-y-12">
+            <div>
+              <h4 class="text-blue-400 font-mono text-sm mb-2 uppercase tracking-widest">Case Study: Lockheed Martin</h4>
+              <h3 class="text-2xl font-bold text-white">The TPY Scale-Up (10x Output)</h3>
+              <p class="text-gray-400 mt-4 leading-relaxed">
+                By redesigning the flow-line architecture and integrating automated torque/tooling metrics, I successfully reduced the lead time for the TPY program from **2 years down to 2 months**.
+              </p>
+            </div>
+            <div>
+              <h4 class="text-teal-400 font-mono text-sm mb-2 uppercase tracking-widest">Strategic Value: Contract Acquisition</h4>
+              <h3 class="text-2xl font-bold text-white">12-Figure Proposal Engineering</h3>
+              <p class="text-gray-400 mt-4 leading-relaxed">
+                Provided the technical and manufacturing architecture "Proof of Concept" for multiple 12-figure defense contracts, bridging the gap between sales promises and engineering reality.
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="w-[calc(100%-4rem)] md:w-[45%] p-6 rounded-xl border border-gray-800 bg-gray-900/50 shadow-xl">
-          <time class="font-mono text-xs text-blue-400">2023 – 2024</time>
-          <div class="text-white font-bold">Collins Aerospace · Industrial Engineer</div>
-          <p class="text-gray-400 text-sm mt-2">Migrated metric visualization from "closet servers" to **Azure Cloud**. Managed 100+ personnel facility operations and prototyped circuit card testing fixtures.</p>
+        <div class="flex-1 w-full bg-black/60 rounded-3xl p-8 border border-gray-800">
+           
+           <p class="text-center text-xs text-gray-500 mt-4 font-mono">Figure 1.2: Standardized Secure IIoT Deployment Pattern</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <footer class="py-12 border-t border-gray-800 text-center">
-    <p class="text-gray-500 text-sm">© 2026 Mitchell Schauer | Designed for Decentralization & Resilience</p>
-  </footer>
+    <section id="research" class="py-24 bg-gradient-to-b from-gray-900 to-black">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-white mb-16 text-center">Active R&D: The Autonomy Lab</h2>
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="order-2 lg:order-1">
+             <div class="bg-[#050505] p-6 rounded-2xl border border-blue-500/20 shadow-2xl">
+               <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-4">
+                 <span class="text-white font-bold">Lab Status: Mobile_Node_01</span>
+                 <span class="flex items-center text-green-500 text-xs"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> SYSTEM NOMINAL</span>
+               </div>
+               <div class="space-y-4 font-mono text-xs">
+                 <p class="text-blue-400">> Initializing 48V Power Telemetry... <span class="text-white">[OK]</span></p>
+                 <p class="text-blue-400">> Mounting ZFS Pool (48TB RaidZ2)... <span class="text-white">[OK]</span></p>
+                 <p class="text-blue-400">> Loading Local LLM (Llama 3)... <span class="text-white">[OK]</span></p>
+                 <p class="text-blue-400">> Establishing Wireguard SDN... <span class="text-white">[OK]</span></p>
+                 <p class="text-white mt-4 border-t border-gray-800 pt-4">Target: Offline-First Human Autonomy</p>
+               </div>
+             </div>
+          </div>
+          <div class="order-1 lg:order-2">
+            <h3 class="text-3xl font-bold text-white mb-6">The 39' Mobile HomeLab</h3>
+            <p class="text-gray-400 mb-6 text-lg">
+              This isn't a hobby; it's an infrastructure testing ground. I'm converting a bus into a self-sustaining, AI-integrated node that features:
+            </p>
+            <ul class="space-y-4">
+              <li class="flex gap-4">
+                <span class="bg-gray-800 p-3 rounded-lg text-blue-400 text-xl">🔋</span>
+                <div>
+                  <h5 class="text-white font-bold">Microgrid Intelligence</h5>
+                  <p class="text-sm text-gray-500">Real-time solar/battery telemetry via ESP32 and MQTT.</p>
+                </div>
+              </li>
+              <li class="flex gap-4">
+                <span class="bg-gray-800 p-3 rounded-lg text-teal-400 text-xl">🛰️</span>
+                <div>
+                  <h5 class="text-white font-bold">Decentralized Networking</h5>
+                  <p class="text-sm text-gray-500">Zero-Trust remote access and site-to-site failover.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact" class="py-24 border-t border-gray-800 text-center">
+      <h2 class="text-2xl font-bold text-white mb-8">Architecting the future of systems.</h2>
+      <div class="flex justify-center gap-8 mb-12">
+        <a href="mailto:schauer.mitchell@gmail.com" class="text-gray-400 hover:text-white transition-colors">Email</a>
+        <a href="https://linkedin.com/in/mitchell-schauer" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+        <a href="https://github.com/mitchschauer" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+      </div>
+      <p class="text-gray-600 text-sm">© 2026 Mitchell Schauer | Designed for Decentralization & Resilience</p>
+    </footer>
+  </main>
 </Layout>
