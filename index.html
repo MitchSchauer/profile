@@ -175,6 +175,27 @@ input {
   outline:none;
   width:80%;
 }
+/* TYPEWRITER */
+.subtitle {
+  margin-top:15px;
+  font-size:1.3rem;
+  font-weight:600;
+  color: var(--accent);
+  min-height: 28px;
+}
+
+.cursor {
+  display:inline-block;
+  margin-left:5px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 </style>
 </head>
 
@@ -183,11 +204,9 @@ input {
 <section class="hero">
   <div class="hero-text">
     <h1>Mitchell Schauer</h1>
-    <div class="subtitle">Manufacturing Systems Engineer | Secure Infrastructure | Edge AI</div>
-    <p>
-      Architecting enterprise production ecosystems and secure industrial networks for defense environments. 
-      Specializing in VLAN segmentation, AI-driven inspection systems, PLC modernization, and edge-first autonomous infrastructure.
-    </p>
+   <div class="subtitle">
+  <span id="typed-text"></span><span class="cursor">|</span>
+</div>
 
     <div class="cta">
       <a href="resume.pdf" class="button primary">Download Resume</a>
@@ -227,7 +246,7 @@ input.addEventListener("keydown", function(e){
       window.open("https://linkedin.com/in/mitch-schauer","_blank");
     }
     else if(cmd === "lab"){
-      output.innerHTML += "Mobile Node: Proxmox HA | 48TB RAIDZ2 | WireGuard SDN | Offline LLM<br>";
+      output.innerHTML += "Mobile Node: Proxmox HA | 16TB RAIDZ2 | WireGuard SDN | Offline LLM<br>";
     }
     else if(cmd === "clear"){
       output.innerHTML = "";
@@ -238,6 +257,51 @@ input.addEventListener("keydown", function(e){
     output.innerHTML += "<br>";
     input.value="";
   }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const words = [
+    "Systems Engineer",
+    "Secure Infrastructure Designer",
+    "Industrial AI Integrator",
+    "Edge Intelligence Builder",
+    "Renewable Microgrid Engineer"
+  ];
+
+  const typedText = document.getElementById("typed-text");
+
+  let wordIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function typeEffect() {
+    const currentWord = words[wordIndex];
+
+    if (!isDeleting) {
+      typedText.textContent = currentWord.substring(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex === currentWord.length) {
+        setTimeout(() => isDeleting = true, 1400);
+      }
+    } else {
+      typedText.textContent = currentWord.substring(0, charIndex - 1);
+      charIndex--;
+
+      if (charIndex === 0) {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+      }
+    }
+
+    const speed = isDeleting ? 25 : 45; // faster typing + deleting
+    setTimeout(typeEffect, speed);
+  }
+
+  typeEffect();
+
 });
 </script>
 
