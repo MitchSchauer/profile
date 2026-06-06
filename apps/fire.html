@@ -1,244 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal FIRE Savings Calculator - Final</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-color: #f7f6f2;
-            --text-main: #333;
-            --text-light: #707070;
-            --coast-fire-bg: #e1f5fe;
-            --coast-fire-text: #01579b;
-            --coast-fire-check: #00897b;
-            --barista-fire-bg: #fff3e0;
-            --barista-fire-text: #bf360c;
-            --full-fire-bg: #f3e5f5;
-            --full-fire-text: #7b1fa2;
-            --primary-card-bg: #fff;
-            --border-radius: 12px;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .dashboard-container { width: 100%; max-width: 1200px; display: grid; gap: 24px; }
-
-        .controls-panel { background: #fff; padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        .input-label { font-size: 14px; color: var(--text-light); font-weight: 600; }
-        .input-value { font-size: 20px; font-weight: 700; color: var(--text-main); }
-        input[type="range"] { width: 100%; height: 6px; background: #ddd; border-radius: 3px; outline: none; accent-color: var(--coast-fire-check); cursor: pointer; }
-
-        h2.section-title { font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0; }
-
-        .milestone-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .milestone-card { background: var(--primary-card-bg); border-radius: var(--border-radius); padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 5px solid transparent; min-height: 220px; display: flex; flex-direction: column; }
-        .pill { display: inline-flex; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; width: fit-content; }
-        .milestone-result-text { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-        .milestone-detail-text { color: var(--text-light); font-size: 14px; line-height: 1.6; }
-        .milestone-detail-text strong { color: var(--text-main); }
-
-        .coast-fire { border-top-color: var(--coast-fire-check); }
-        .coast-fire .pill { background-color: var(--coast-fire-bg); color: var(--coast-fire-text); }
-        .barista-fire { border-top-color: var(--barista-fire-text); }
-        .barista-fire .pill { background-color: var(--barista-fire-bg); color: var(--barista-fire-text); }
-        .full-fire { border-top-color: var(--full-fire-text); }
-        .full-fire .pill { background-color: var(--full-fire-bg); color: var(--full-fire-text); }
-
-        .graph-panel { background: #fff; padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 450px; }
-        .assumptions { font-size: 12px; color: var(--text-light); padding: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Architecture FIRE Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="bg-gray-950 text-gray-100 font-sans antialiased min-h-screen pb-12">
 
-    <div class="dashboard-container">
-        <h2 class="section-title">CURRENT SNAPSHOT</h2>
-        <div class="controls-panel">
-            <div class="input-group"><label class="input-label">Age</label><span class="input-value" id="val-age">35</span><input type="range" id="age" min="18" max="70" value="35"></div>
-            <div class="input-group"><label class="input-label">Portfolio</label><span class="input-value" id="val-portfolio">$770k</span><input type="range" id="portfolio" min="0" max="3000000" step="10000" value="770000"></div>
-            <div class="input-group"><label class="input-label">Annual Spending</label><span class="input-value" id="val-spending">$110k</span><input type="range" id="spending" min="20000" max="400000" step="5000" value="110000"></div>
-            <div class="input-group"><label class="input-label">Annual Investing</label><span class="input-value" id="val-savings">$60k</span><input type="range" id="savings" min="0" max="300000" step="5000" value="60000"></div>
-            <div class="input-group"><label class="input-label">Target Retire Age</label><span class="input-value" id="val-targetAge">65</span><input type="range" id="targetAge" min="40" max="85" value="65"></div>
+  <div class="w-full bg-amber-950/20 border-b border-amber-900/40 px-4 py-3 text-center">
+    <p class="text-xs text-amber-300/90 max-w-5xl mx-auto tracking-wide leading-relaxed">
+      ⚠️ <strong>Disclaimer:</strong> This is a simulation calculator and not financial advice. This is strictly a tool to help you test your numbers and model theoretical trajectories. Always consult with a certified professional before making real-world investment decisions. 
+      <a href="https://github.com/MitchSchauer/profile/blob/main/apps/fire.html" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:text-sky-300 font-bold underline inline-flex items-center gap-0.5 ml-1 transition">
+        Review the Math on GitHub ↗
+      </a>
+    </p>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-4 pt-8">
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-800 pb-6 mb-6 gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400">Portfolio Projection Engine</h1>
+        <p class="text-sm text-gray-400 mt-1">Multi-account tax structure modeling with monthly compound interest routines.</p>
+      </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex gap-6 shrink-0 shadow-md">
+        <div>
+          <span class="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Target FIRE Goal</span>
+          <span id="target-fire-number" class="text-2xl font-black text-emerald-400">$0</span>
+        </div>
+        <div class="border-l border-gray-800 pl-6">
+          <span class="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Target Milestone Age</span>
+          <span id="target-milestone-age" class="text-sm font-mono block mt-1.5 text-gray-300">--</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-purple-400 uppercase tracking-widest font-bold">🏝️ Coast FIRE</span>
+            <span id="coast-status" class="text-[10px] px-2 py-0.5 rounded font-bold bg-gray-800 text-gray-400">Pending</span>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-1">Zero future contributions needed to hit core FIRE goal by target age.</p>
+        </div>
+        <div class="mt-4">
+          <span id="coast-age" class="text-2xl font-black font-mono text-purple-400">--</span>
+          <span id="coast-value" class="block text-[10px] text-gray-500 mt-0.5">Required: $0</span>
+        </div>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-amber-400 uppercase tracking-widest font-bold">☕ Barista FIRE</span>
+            <span id="barista-status" class="text-[10px] px-2 py-0.5 rounded font-bold bg-gray-800 text-gray-400">Pending</span>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-1">Investments safely cover 50% of your projected annual spend.</p>
+        </div>
+        <div class="mt-4">
+          <span id="barista-age" class="text-2xl font-black font-mono text-amber-400">--</span>
+          <span id="barista-value" class="block text-[10px] text-gray-500 mt-0.5">Required: $0</span>
+        </div>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-emerald-400 uppercase tracking-widest font-bold">🔥 Full FIRE</span>
+            <span id="full-status" class="text-[10px] px-2 py-0.5 rounded font-bold bg-gray-800 text-gray-400">Pending</span>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-1">Investments fully support 100% of your targeted living expenses.</p>
+        </div>
+        <div class="mt-4">
+          <span id="full-age" class="text-2xl font-black font-mono text-emerald-400">--</span>
+          <span id="full-value" class="block text-[10px] text-gray-500 mt-0.5">Required: $0</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <div class="lg:col-span-1 flex flex-col gap-6">
+        
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+          <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-800 pb-2">⏱️ Timeline Details</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs text-gray-400 font-semibold mb-1">Current Age: <span id="lbl-age" class="text-sky-400 font-bold">35</span></label>
+              <input type="range" id="age" min="18" max="70" value="35" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 font-semibold mb-1">Retirement Target Age: <span id="lbl-retireAge" class="text-sky-400 font-bold">60</span></label>
+              <input type="range" id="retireAge" min="40" max="85" value="60" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 font-semibold mb-1">Growth Rate (Real): <span id="lbl-growth" class="text-sky-400 font-bold">7</span>%</label>
+              <input type="range" id="growth" min="2" max="12" step="0.5" value="7" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 font-semibold mb-1">Annual Contribution Step-up: <span id="lbl-stepUp" class="text-sky-400 font-bold">2</span>%</label>
+              <input type="range" id="stepUp" min="0" max="10" step="0.5" value="2" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 font-semibold mb-1">Target Annual Spending: <span id="lbl-spending" class="text-sky-400 font-bold">$100,000</span></label>
+              <input type="range" id="spending" min="20000" max="300000" step="5000" value="100000" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            </div>
+          </div>
         </div>
 
-        <h2 class="section-title">FIRE MILESTONES</h2>
-        <div class="milestone-container">
-            <div class="milestone-card coast-fire">
-                <span class="pill">Coast FIRE</span>
-                <div class="milestone-result-text" id="coast-year">~2026</div>
-                <div class="milestone-detail-text" id="coast-detail">Calculating...</div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg space-y-4">
+          <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-800 pb-2">🏦 Account Matrices</h2>
+          
+          <div class="space-y-2 pt-1">
+            <span class="block text-[10px] tracking-widest font-bold uppercase text-purple-400">Traditional 401(k)</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-gray-500">Initial</label>
+                <input type="number" id="init401k" value="150000" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-purple-500 font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] text-gray-500">Annual Dep.</label>
+                <input type="number" id="contrib401k" value="23500" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-purple-500 font-mono">
+              </div>
             </div>
-            <div class="milestone-card barista-fire">
-                <span class="pill">Barista FIRE</span>
-                <div class="milestone-result-text" id="barista-year">~2029</div>
-                <div class="milestone-detail-text" id="barista-detail">Calculating...</div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="block text-[10px] tracking-widest font-bold uppercase text-amber-400">Roth IRA</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-gray-500">Initial</label>
+                <input type="number" id="initRoth" value="50000" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-amber-500 font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] text-gray-500">Annual Dep.</label>
+                <input type="number" id="contribRoth" value="7000" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-amber-500 font-mono">
+              </div>
             </div>
-            <div class="milestone-card full-fire">
-                <span class="pill">Full FIRE</span>
-                <div class="milestone-result-text" id="fire-year">~2034</div>
-                <div class="milestone-detail-text" id="fire-detail">Calculating...</div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="block text-[10px] tracking-widest font-bold uppercase text-sky-400">Taxable Brokerage</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-gray-500">Initial</label>
+                <input type="number" id="initTaxable" value="100000" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-sky-500 font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] text-gray-500">Annual Dep.</label>
+                <input type="number" id="contribTaxable" value="15000" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-gray-100 focus:outline-none focus:border-sky-500 font-mono">
+              </div>
             </div>
+          </div>
+
+          <div class="pt-2 border-t border-gray-800 space-y-3">
+            <label class="flex items-center justify-between cursor-pointer p-1 rounded hover:bg-gray-850/50 transition">
+              <span class="text-xs text-gray-400 font-medium tracking-wide">Overlay Milestone Markers</span>
+              <div class="relative">
+                <input type="checkbox" id="toggle-overlays" checked class="sr-only peer">
+                <div class="w-9 h-5 bg-gray-800 border border-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-400 peer-checked:after:bg-teal-400 after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-teal-950/40 peer-checked:border-teal-800"></div>
+              </div>
+            </label>
+
+            <label class="flex items-center justify-between cursor-pointer p-1 rounded hover:bg-gray-850/50 transition">
+              <span class="text-xs text-gray-400 font-medium tracking-wide">Simulate Spend Drawdown</span>
+              <div class="relative">
+                <input type="checkbox" id="toggle-drawdown" class="sr-only peer">
+                <div class="w-9 h-5 bg-gray-800 border border-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-400 peer-checked:after:bg-emerald-400 after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-950/40 peer-checked:border-emerald-800"></div>
+              </div>
+            </label>
+            
+            <button id="btn-recalc" class="w-full bg-gradient-to-r from-teal-500 to-sky-500 hover:from-teal-600 hover:to-sky-600 text-gray-950 font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-lg shadow transition-all active:scale-[0.98]">
+              🔄 Recalculate Projections
+            </button>
+          </div>
         </div>
 
-        <h2 class="section-title">PORTFOLIO GROWTH PROJECTION</h2>
-        <div class="graph-panel">
-            <canvas id="fireChart"></canvas>
+      </div>
+
+      <div class="lg:col-span-2 flex flex-col gap-6">
+        
+        <div id="status-card" class="bg-gray-800 border border-gray-700 rounded-xl p-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div id="status-badge" class="bg-teal-500 text-gray-950 font-black text-xl rounded-lg h-12 w-12 flex items-center justify-center shrink-0 shadow-inner">
+              ✓
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-gray-100" id="status-title">Target Milestone Snapshot</h3>
+              <p class="text-xs text-gray-400 mt-0.5" id="status-detail">Calculating metrics...</p>
+            </div>
+          </div>
         </div>
-        <div class="assumptions">Assumptions: 7% Nominal Return, 2% Inflation. Withdrawal Rate: 4%. Projections are estimates.</div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+          <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">📈 Portfolio Balances By Age</h2>
+          <div class="h-[280px]">
+            <canvas id="balanceChart"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script>
-        const GROWTH_RATE = 0.07;
-        const INFLATION_RATE = 0.02;
-        const SWR = 0.04;
-        const CURRENT_YEAR = new Date().getFullYear();
+    <section class="mt-8">
+      <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-1">
+        <span>📋</span> Exact Ledger Projections
+      </h2>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-lg">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse font-mono text-xs">
+            <thead>
+              <tr class="bg-gray-950 border-b border-gray-800 text-gray-400 tracking-wider uppercase">
+                <th class="p-3">Age</th>
+                <th class="p-3 text-purple-400">401(k)</th>
+                <th class="p-3 text-amber-400">Roth IRA</th>
+                <th class="p-3 text-sky-400">Taxable</th>
+                <th class="p-3 text-emerald-400 font-bold">Total Portfolio</th>
+                <th class="p-3 text-gray-500">Target Gap</th>
+              </tr>
+            </thead>
+            <tbody id="projection-table-body" class="divide-y divide-gray-800/50 text-gray-300">
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-        const inputs = {
-            age: document.getElementById('age'),
-            portfolio: document.getElementById('portfolio'),
-            spending: document.getElementById('spending'),
-            savings: document.getElementById('savings'),
-            targetAge: document.getElementById('targetAge')
-        };
+  </div>
 
-        const displays = {
-            age: document.getElementById('val-age'),
-            portfolio: document.getElementById('val-portfolio'),
-            spending: document.getElementById('val-spending'),
-            savings: document.getElementById('val-savings'),
-            targetAge: document.getElementById('val-targetAge')
-        };
+  <script>
+    const MAX_401K_LIMIT = 23500;
+    const MAX_ROTH_LIMIT = 7000;
 
-        let fireChart;
+    const inputs = {
+      age: document.getElementById('age'),
+      retireAge: document.getElementById('retireAge'),
+      growth: document.getElementById('growth'),
+      stepUp: document.getElementById('stepUp'),
+      spending: document.getElementById('spending'),
+      init401k: document.getElementById('init401k'),
+      contrib401k: document.getElementById('contrib401k'),
+      initRoth: document.getElementById('initRoth'),
+      contribRoth: document.getElementById('contribRoth'),
+      initTaxable: document.getElementById('initTaxable'),
+      contribTaxable: document.getElementById('contribTaxable')
+    };
 
-        function formatK(num) {
-            if (num >= 1000000) return '$' + (num/1000000).toFixed(2) + 'M';
-            return '$' + (num/1000).toFixed(0) + 'k';
-        }
+    const displays = {
+      age: document.getElementById('lbl-age'),
+      retireAge: document.getElementById('lbl-retireAge'),
+      growth: document.getElementById('lbl-growth'),
+      stepUp: document.getElementById('lbl-stepUp'),
+      spending: document.getElementById('lbl-spending')
+    };
+
+    const toggleOverlays = document.getElementById('toggle-overlays');
+    const toggleDrawdown = document.getElementById('toggle-drawdown');
+    let balanceChart = null;
+
+    function formatCurrency(num) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+    }
+
+    function runEnginePipeline() {
+      const currentAge = parseInt(inputs.age.value) || 0;
+      const targetRetireAge = parseInt(inputs.retireAge.value) || 0;
+      const annualRealGrowth = (parseFloat(inputs.growth.value) || 0) / 100;
+      const annualStepUpRate = (parseFloat(inputs.stepUp.value) || 0) / 100;
+      const annualSpendingTarget = parseInt(inputs.spending.value) || 0;
+
+      let balance401k = parseFloat(inputs.init401k.value) || 0;
+      let balanceRoth = parseFloat(inputs.initRoth.value) || 0;
+      let balanceTaxable = parseFloat(inputs.initTaxable.value) || 0;
+
+      let baseAnnualContrib401k = parseFloat(inputs.contrib401k.value) || 0;
+      let baseAnnualContribRoth = parseFloat(inputs.contribRoth.value) || 0;
+      let baseAnnualContribTaxable = parseFloat(inputs.contribTaxable.value) || 0;
+
+      displays.age.innerText = currentAge;
+      displays.retireAge.innerText = targetRetireAge;
+      displays.growth.innerText = inputs.growth.value;
+      displays.stepUp.innerText = inputs.stepUp.value;
+      displays.spending.innerText = formatCurrency(annualSpendingTarget);
+
+      const absoluteFireNumber = annualSpendingTarget / 0.04;
+      const baristaFireNumber = absoluteFireNumber / 2;
+      
+      document.getElementById('target-fire-number').innerText = formatCurrency(absoluteFireNumber);
+      document.getElementById('target-milestone-age').innerText = `Age ${targetRetireAge}`;
+
+      const monthlyRate = Math.pow(1 + annualRealGrowth, 1 / 12) - 1;
+
+      const timelineAges = [];
+      const dataset401k = [];
+      const datasetRoth = [];
+      const datasetTaxable = [];
+      const datasetTotal = [];
+      const ledgerLogs = [];
+
+      let retirementTargetTotalBalance = 0;
+      const isDrawdownEnabled = toggleDrawdown.checked;
+
+      // Pipeline Run: Generate standard compound portfolio dataset
+      for (let age = currentAge; age <= 85; age++) {
+        const structuralIndex = age - currentAge;
+        const totalPortfolio = balance401k + balanceRoth + balanceTaxable;
         
-        function formatFull(num) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        timelineAges.push(age);
+        dataset401k.push(Math.round(balance401k));
+        datasetRoth.push(Math.round(balanceRoth));
+        datasetTaxable.push(Math.round(balanceTaxable));
+        datasetTotal.push(Math.round(totalPortfolio));
+
+        if (age === targetRetireAge) {
+          retirementTargetTotalBalance = totalPortfolio;
         }
 
-        function calculate() {
-            const age = parseInt(inputs.age.value);
-            const portfolio = parseInt(inputs.portfolio.value);
-            const spending = parseInt(inputs.spending.value);
-            const savings = parseInt(inputs.savings.value);
-            const targetAge = parseInt(inputs.targetAge.value);
+        ledgerLogs.push({
+          age: age,
+          b401k: balance401k,
+          bRoth: balanceRoth,
+          bTaxable: balanceTaxable,
+          total: totalPortfolio
+        });
 
-            displays.age.innerText = age;
-            displays.portfolio.innerText = formatK(portfolio);
-            displays.spending.innerText = formatK(spending);
-            displays.savings.innerText = formatK(savings);
-            displays.targetAge.innerText = targetAge;
+        const isPostRetirement = age >= targetRetireAge;
+        
+        // --- Monthly Compound Calculations Engine Routine ---
+        for (let m = 0; m < 12; m++) {
+          if (!isPostRetirement) {
+            // Accumulation Mode Processing
+            const scaleMultiplier = Math.pow(1 + annualStepUpRate, structuralIndex);
+            const monthlyDeposit401k = Math.min(baseAnnualContrib401k * scaleMultiplier, MAX_401K_LIMIT) / 12;
+            const monthlyDepositRoth = Math.min(baseAnnualContribRoth * scaleMultiplier, MAX_ROTH_LIMIT) / 12;
+            const monthlyDepositTaxable = (baseAnnualContribTaxable * scaleMultiplier) / 12;
 
-            let yearsToRetire = targetAge - age;
-            let fireTargetAtRetire = (spending * Math.pow(1 + INFLATION_RATE, yearsToRetire)) / SWR;
+            balance401k = (balance401k + monthlyDeposit401k) * (1 + monthlyRate);
+            balanceRoth = (balanceRoth + monthlyDepositRoth) * (1 + monthlyRate);
+            balanceTaxable = (balanceTaxable + monthlyDepositTaxable) * (1 + monthlyRate);
+          } else {
+            // Retirement Mode Processing
+            balance401k = balance401k * (1 + monthlyRate);
+            balanceRoth = balanceRoth * (1 + monthlyRate);
+            balanceTaxable = balanceTaxable * (1 + monthlyRate);
 
-            // 1. Coast FIRE Logic
-            let cYear = CURRENT_YEAR;
-            let cAge = age;
-            let isAlreadyCoast = (portfolio * Math.pow(1 + GROWTH_RATE, yearsToRetire) >= fireTargetAtRetire);
-            
-            if (!isAlreadyCoast) {
-                let simPort = portfolio;
-                for (let i = 1; i <= yearsToRetire; i++) {
-                    simPort = (simPort * (1 + GROWTH_RATE)) + savings;
-                    let remaining = targetAge - (age + i);
-                    if (simPort * Math.pow(1 + GROWTH_RATE, remaining) >= fireTargetAtRetire) {
-                        cYear = CURRENT_YEAR + i;
-                        cAge = age + i;
-                        break;
-                    }
+            if (isDrawdownEnabled) {
+              let monthlySpendNeeded = annualSpendingTarget / 12;
+
+              // Extract from Taxable Brokerage Portfolio Matrix First
+              if (balanceTaxable >= monthlySpendNeeded) {
+                balanceTaxable -= monthlySpendNeeded;
+                monthlySpendNeeded = 0;
+              } else {
+                monthlySpendNeeded -= balanceTaxable;
+                balanceTaxable = 0;
+              }
+
+              // Extract remaining balance deficit uniformly from tax-advantaged vehicles if taxable drops to 0
+              if (monthlySpendNeeded > 0) {
+                const totalAdvBal = balance401k + balanceRoth;
+                if (totalAdvBal >= monthlySpendNeeded) {
+                  const ratio401k = balance401k / totalAdvBal;
+                  balance401k -= monthlySpendNeeded * ratio401k;
+                  balanceRoth -= monthlySpendNeeded * (1 - ratio401k);
+                  monthlySpendNeeded = 0;
+                } else {
+                  balance401k = 0;
+                  balanceRoth = 0;
                 }
+              }
             }
+          }
+        }
+      }
 
-            document.getElementById('coast-year').innerText = isAlreadyCoast ? "Already There ✓" : "~" + cYear;
-            document.getElementById('coast-detail').innerHTML = isAlreadyCoast 
-                ? `Achieved at age <strong>${age}</strong>. You reach Coast FIRE when your assets, growing on their own, can hit your dynamic FIRE target of <strong>${formatK(fireTargetAtRetire)}</strong> at age ${targetAge}.`
-                : `Achieved at age <strong>~${cAge}</strong>. You reach Coast FIRE when your assets, growing on their own, can hit your dynamic FIRE target of <strong>${formatK(fireTargetAtRetire)}</strong> at age ${targetAge}.`;
+      // Calculate milestone states ahead of parsing HTML layouts
+      let coastAge = null;
+      let baristaAge = null;
+      let fullAge = null;
 
-            // 2. Simulation for Barista & Full FIRE
-            let baristaYear = null, baristaAge = null, baristaPort = 0, baristaSWR = 0;
-            let fullYear = null, fullAge = null, fullPort = 0, fullTarget = 0;
-            
-            let port = portfolio;
-            let currentSpend = spending;
-            
-            const labels = [], portData = [], targetData = [];
+      // Find Barista and Full FIRE years sequentially
+      for (let i = 0; i < ledgerLogs.length; i++) {
+        const entry = ledgerLogs[i];
+        if (baristaAge === null && entry.total >= baristaFireNumber) {
+          baristaAge = entry.age;
+        }
+        if (fullAge === null && entry.total >= absoluteFireNumber) {
+          fullAge = entry.age;
+        }
+      }
 
-            for (let i = 0; i <= (85 - age); i++) {
-                let simYear = CURRENT_YEAR + i;
-                let simAge = age + i;
-                let currentTarget = currentSpend / SWR;
-                
-                labels.push(simYear);
-                portData.push(port);
-                targetData.push(currentTarget);
+      // Calculate Coast FIRE criteria based on compound interest formulas
+      for (let i = 0; i < ledgerLogs.length; i++) {
+        const entry = ledgerLogs[i];
+        if (entry.age <= targetRetireAge) {
+          const yearsRemaining = targetRetireAge - entry.age;
+          const projectedCoastValue = entry.total * Math.pow(1 + annualRealGrowth, yearsRemaining);
+          if (projectedCoastValue >= absoluteFireNumber) {
+            coastAge = entry.age;
+            break;
+          }
+        }
+      }
 
-                if (!baristaYear && port >= (currentTarget * 0.5)) {
-                    baristaYear = simYear;
-                    baristaAge = simAge;
-                    baristaPort = port;
-                    baristaSWR = port * SWR;
-                }
-                if (!fullYear && port >= currentTarget) {
-                    fullYear = simYear;
-                    fullAge = simAge;
-                    fullPort = port;
-                    fullTarget = currentTarget;
-                }
+      // Process & display exact projections ledger with highlighted overlays
+      let tableHtml = "";
+      const overlaysActive = toggleOverlays.checked;
 
-                if (!fullYear) { port = (port * (1 + GROWTH_RATE)) + savings; } 
-                else { port = (port * (1 + GROWTH_RATE)); }
-                
-                currentSpend *= (1 + INFLATION_RATE);
+      ledgerLogs.forEach(log => {
+        const currentTargetGap = absoluteFireNumber - log.total;
+        let gapDisplay = currentTargetGap <= 0 ? "<span class='text-emerald-400 font-bold'>Met ✓</span>" : formatCurrency(currentTargetGap);
+        
+        if (isDrawdownEnabled && log.age > targetRetireAge) {
+          gapDisplay = log.total <= 0 ? "<span class='text-red-500 font-semibold'>Depleted</span>" : "<span class='text-gray-500'>Distributing</span>";
+        }
+
+        // Classify overlay highlights dynamically
+        let structuralRowClass = "hover:bg-gray-800/30";
+        let ageLabelSuffix = "";
+
+        if (log.age === targetRetireAge) {
+          structuralRowClass = "bg-indigo-950/40 font-bold border-y border-indigo-800/80";
+          ageLabelSuffix += ' <span class="text-[9px] text-indigo-400 bg-indigo-900/40 border border-indigo-800 px-1 py-0.5 rounded ml-1 font-sans font-black uppercase">Target</span>';
+        }
+
+        if (overlaysActive) {
+          if (log.age === coastAge) {
+            structuralRowClass = "bg-purple-950/30 font-bold border-y border-purple-800/60";
+            ageLabelSuffix += ' <span class="text-[9px] text-purple-400 bg-purple-900/40 border border-purple-800 px-1 py-0.5 rounded ml-1 font-sans font-bold uppercase">Coast</span>';
+          } else if (log.age === baristaAge) {
+            structuralRowClass = "bg-amber-950/30 font-bold border-y border-amber-800/60";
+            ageLabelSuffix += ' <span class="text-[9px] text-amber-400 bg-amber-900/40 border border-amber-800 px-1 py-0.5 rounded ml-1 font-sans font-bold uppercase">Barista</span>';
+          } else if (log.age === fullAge) {
+            structuralRowClass = "bg-emerald-950/40 font-bold border-y border-emerald-800/60";
+            ageLabelSuffix += ' <span class="text-[9px] text-emerald-400 bg-emerald-900/40 border border-emerald-800 px-1 py-0.5 rounded ml-1 font-sans font-bold uppercase">Full Fire</span>';
+          }
+        }
+
+        tableHtml += `
+          <tr class="${structuralRowClass}">
+            <td class="p-3 text-gray-450 flex items-center whitespace-nowrap">${log.age}${ageLabelSuffix}</td>
+            <td class="p-3 text-purple-300">${formatCurrency(log.b401k)}</td>
+            <td class="p-3 text-amber-300">${formatCurrency(log.bRoth)}</td>
+            <td class="p-3 text-sky-300">${formatCurrency(log.bTaxable)}</td>
+            <td class="p-3 text-emerald-300 font-bold">${formatCurrency(log.total)}</td>
+            <td class="p-3 text-gray-400">${gapDisplay}</td>
+          </tr>
+        `;
+      });
+      document.getElementById('projection-table-body').innerHTML = tableHtml;
+
+      // Update Top Card Metrics
+      updateMilestoneCard('coast', coastAge, currentAge, targetRetireAge, (absoluteFireNumber / Math.pow(1 + annualRealGrowth, Math.max(0, targetRetireAge - currentAge))));
+      updateMilestoneCard('barista', baristaAge, currentAge, 85, baristaFireNumber);
+      updateMilestoneCard('full', fullAge, currentAge, 85, absoluteFireNumber);
+
+      // Main header notification box check
+      const statusBadge = document.getElementById('status-badge');
+      const statusTitle = document.getElementById('status-title');
+      const statusDetail = document.getElementById('status-detail');
+
+      if (retirementTargetTotalBalance >= absoluteFireNumber) {
+        statusBadge.className = "bg-teal-500 text-gray-950 font-black text-xl rounded-lg h-12 w-12 flex items-center justify-center shrink-0 shadow-inner";
+        statusBadge.innerText = "✓";
+        statusTitle.innerText = `Goal Achieved by Age ${targetRetireAge}`;
+        statusDetail.innerHTML = `Projected total: <span class="text-emerald-400 font-bold">${formatCurrency(retirementTargetTotalBalance)}</span> overshot the standard safe threshold targets of ${formatCurrency(absoluteFireNumber)}.`;
+      } else {
+        const gapValue = absoluteFireNumber - retirementTargetTotalBalance;
+        statusBadge.className = "bg-amber-500 text-gray-950 font-black text-xl rounded-lg h-12 w-12 flex items-center justify-center shrink-0 shadow-inner";
+        statusBadge.innerText = "⤜";
+        statusTitle.innerText = `Deficit Detected at Age ${targetRetireAge}`;
+        statusDetail.innerHTML = `Projected total: <span class="text-amber-400 font-bold">${formatCurrency(retirementTargetTotalBalance)}</span>. Misses target window baseline requirement by <span class="text-red-400 font-bold">${formatCurrency(gapValue)}</span>.`;
+      }
+
+      updateStackAreaChart(timelineAges, dataset401k, datasetRoth, datasetTaxable, { coastAge, baristaAge, fullAge, overlaysActive });
+    }
+
+    function updateMilestoneCard(prefix, calculatedAge, currentAge, capLimit, targetValue) {
+      const ageEl = document.getElementById(`${prefix}-age`);
+      const statusEl = document.getElementById(`${prefix}-status`);
+      const valueEl = document.getElementById(`${prefix}-value`);
+
+      valueEl.innerText = `Required: ${formatCurrency(targetValue)}`;
+
+      if (calculatedAge !== null) {
+        if (calculatedAge === currentAge) {
+          ageEl.innerText = "Achieved";
+          statusEl.innerText = "Active ✓";
+          statusEl.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-400 border border-emerald-800";
+        } else {
+          ageEl.innerText = `Age ${calculatedAge}`;
+          statusEl.innerText = "On Track";
+          statusEl.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-sky-950 text-sky-400 border border-sky-800";
+        }
+      } else {
+        ageEl.innerText = "Out of Reach";
+        statusEl.innerText = "Deficit";
+        statusEl.className = "text-[10px] px-2 py-0.5 rounded font-bold bg-red-950 text-red-400 border border-red-900";
+      }
+    }
+
+    function updateStackAreaChart(labels, d401k, dRoth, dTaxable, flags) {
+      const ctx = document.getElementById('balanceChart').getContext('2d');
+      if (balanceChart) balanceChart.destroy();
+
+      const generatePointConfig = () => {
+        return labels.map(age => {
+          if (!flags.overlaysActive) return 0;
+          if (age === flags.coastAge || age === flags.baristaAge || age === flags.fullAge) return 5;
+          return 0;
+        });
+      };
+
+      const generatePointColors = (defaultColor) => {
+        return labels.map(age => {
+          if (age === flags.coastAge) return '#c084fc';
+          if (age === flags.baristaAge) return '#fbbf24';
+          if (age === flags.fullAge) return '#34d399';
+          return defaultColor;
+        });
+      };
+
+      balanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            { 
+              label: '401(k)', 
+              data: d401k, 
+              borderColor: '#a78bfa', 
+              backgroundColor: 'rgba(167, 139, 250, 0.25)', 
+              fill: true, 
+              tension: 0.1,
+              pointRadius: generatePointConfig(),
+              pointHoverRadius: 6,
+              pointBackgroundColor: generatePointColors('#a78bfa'),
+              pointBorderColor: '#030712',
+              pointBorderWidth: 1.5
+            },
+            { 
+              label: 'Roth IRA', 
+              data: dRoth, 
+              borderColor: '#fbbf24', 
+              backgroundColor: 'rgba(251, 191, 36, 0.25)', 
+              fill: true, 
+              tension: 0.1,
+              pointRadius: generatePointConfig(),
+              pointHoverRadius: 6,
+              pointBackgroundColor: generatePointColors('#fbbf24'),
+              pointBorderColor: '#030712',
+              pointBorderWidth: 1.5
+            },
+            { 
+              label: 'Taxable Brokerage', 
+              data: dTaxable, 
+              borderColor: '#38bdf8', 
+              backgroundColor: 'rgba(56, 189, 248, 0.25)', 
+              fill: true, 
+              tension: 0.1,
+              pointRadius: generatePointConfig(),
+              pointHoverRadius: 6,
+              pointBackgroundColor: generatePointColors('#38bdf8'),
+              pointBorderColor: '#030712',
+              pointBorderWidth: 1.5
             }
-
-            // Update Barista UI
-            document.getElementById('barista-year').innerText = baristaYear ? "~" + baristaYear : "N/A";
-            document.getElementById('barista-detail').innerHTML = baristaYear 
-                ? `Portfolio hits <strong>~${formatK(baristaPort)}</strong>. This can support 4% spending of <strong>${formatFull(baristaSWR)}/yr</strong>. You hit this ${baristaYear - CURRENT_YEAR} years away at age ~${baristaAge}.`
-                : `Switch to part-time work covering 50% of spending. (Not yet achieved in simulation)`;
-
-            // Update Full FIRE UI
-            document.getElementById('fire-year').innerText = fullYear ? "~" + fullYear : "N/A";
-            document.getElementById('fire-detail').innerHTML = fullYear 
-                ? `Portfolio hits <strong>~${formatK(fullPort)}</strong>, exceeding your dynamic inflation-adjusted FIRE number of <strong>~${formatK(fullTarget)}</strong>. (Achieved at age ~${fullAge}).`
-                : `Never work again for money. (Not yet achieved in simulation)`;
-
-            updateChart(labels, portData, targetData);
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { stacked: true, grid: { color: '#1f2937' }, ticks: { color: '#9ca3af', callback: v => '$' + (v / 1000) + 'k' } },
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+          },
+          plugins: {
+            legend: { labels: { color: '#f3e8ff', font: { family: 'monospace', size: 11 } } }
+          }
         }
+      });
+    }
 
-        function updateChart(labels, portData, targetData) {
-            const ctx = document.getElementById('fireChart').getContext('2d');
-            if (fireChart) fireChart.destroy();
-            fireChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Portfolio Value', data: portData, borderColor: '#303f9f', backgroundColor: 'rgba(48, 63, 159, 0.05)', fill: true, tension: 0.4, pointRadius: 0 },
-                        { label: 'FIRE Target', data: targetData, borderColor: '#999', borderDash: [5, 5], fill: false, pointRadius: 0 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, suggestedMax: Math.max(...portData) * 1.1, ticks: { callback: v => formatK(v) } },
-                        x: { ticks: { maxTicksLimit: 12 } }
-                    },
-                    plugins: { legend: { position: 'top', align: 'end' } }
-                }
-            });
-        }
+    // Modernized Auto-Detection Event Mapping (Captures changes instantly)
+    Object.values(inputs).forEach(element => {
+      element.addEventListener('input', runEnginePipeline);
+    });
 
-        Object.values(inputs).forEach(input => input.addEventListener('input', calculate));
-        calculate();
-    </script>
+    toggleOverlays.addEventListener('change', runEnginePipeline);
+    toggleDrawdown.addEventListener('change', runEnginePipeline);
+    document.getElementById('btn-recalc').addEventListener('click', runEnginePipeline);
+
+    // Initial load execution trace
+    runEnginePipeline();
+  </script>
 </body>
 </html>
