@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal FIRE Savings Calculator - Final</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f7f6f2;
+            --text-main: #333;
+            --text-light: #707070;
+            --coast-fire-bg: #e1f5fe;
+            --coast-fire-text: #01579b;
+            --coast-fire-check: #00897b;
+            --barista-fire-bg: #fff3e0;
+            --barista-fire-text: #bf360c;
+            --full-fire-bg: #f3e5f5;
+            --full-fire-text: #7b1fa2;
+            --primary-card-bg: #fff;
+            --border-radius: 12px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .dashboard-container { width: 100%; max-width: 1200px; display: grid; gap: 24px; }
+
+        .controls-panel { background: #fff; padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-label { font-size: 14px; color: var(--text-light); font-weight: 600; }
+        .input-value { font-size: 20px; font-weight: 700; color: var(--text-main); }
+        input[type="range"] { width: 100%; height: 6px; background: #ddd; border-radius: 3px; outline: none; accent-color: var(--coast-fire-check); cursor: pointer; }
+
+        h2.section-title { font-size: 14px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0; }
+
+        .milestone-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .milestone-card { background: var(--primary-card-bg); border-radius: var(--border-radius); padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 5px solid transparent; min-height: 220px; display: flex; flex-direction: column; }
+        .pill { display: inline-flex; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; width: fit-content; }
+        .milestone-result-text { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .milestone-detail-text { color: var(--text-light); font-size: 14px; line-height: 1.6; }
+        .milestone-detail-text strong { color: var(--text-main); }
+
+        .coast-fire { border-top-color: var(--coast-fire-check); }
+        .coast-fire .pill { background-color: var(--coast-fire-bg); color: var(--coast-fire-text); }
+        .barista-fire { border-top-color: var(--barista-fire-text); }
+        .barista-fire .pill { background-color: var(--barista-fire-bg); color: var(--barista-fire-text); }
+        .full-fire { border-top-color: var(--full-fire-text); }
+        .full-fire .pill { background-color: var(--full-fire-bg); color: var(--full-fire-text); }
+
+        .graph-panel { background: #fff; padding: 24px; border-radius: var(--border-radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 450px; }
+        .assumptions { font-size: 12px; color: var(--text-light); padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h2 class="section-title">CURRENT SNAPSHOT</h2>
+        <div class="controls-panel">
+            <div class="input-group"><label class="input-label">Age</label><span class="input-value" id="val-age">35</span><input type="range" id="age" min="18" max="70" value="35"></div>
+            <div class="input-group"><label class="input-label">Portfolio</label><span class="input-value" id="val-portfolio">$770k</span><input type="range" id="portfolio" min="0" max="3000000" step="10000" value="770000"></div>
+            <div class="input-group"><label class="input-label">Annual Spending</label><span class="input-value" id="val-spending">$110k</span><input type="range" id="spending" min="20000" max="400000" step="5000" value="110000"></div>
+            <div class="input-group"><label class="input-label">Annual Investing</label><span class="input-value" id="val-savings">$60k</span><input type="range" id="savings" min="0" max="300000" step="5000" value="60000"></div>
+            <div class="input-group"><label class="input-label">Target Retire Age</label><span class="input-value" id="val-targetAge">65</span><input type="range" id="targetAge" min="40" max="85" value="65"></div>
+        </div>
+
+        <h2 class="section-title">FIRE MILESTONES</h2>
+        <div class="milestone-container">
+            <div class="milestone-card coast-fire">
+                <span class="pill">Coast FIRE</span>
+                <div class="milestone-result-text" id="coast-year">~2026</div>
+                <div class="milestone-detail-text" id="coast-detail">Calculating...</div>
+            </div>
+            <div class="milestone-card barista-fire">
+                <span class="pill">Barista FIRE</span>
+                <div class="milestone-result-text" id="barista-year">~2029</div>
+                <div class="milestone-detail-text" id="barista-detail">Calculating...</div>
+            </div>
+            <div class="milestone-card full-fire">
+                <span class="pill">Full FIRE</span>
+                <div class="milestone-result-text" id="fire-year">~2034</div>
+                <div class="milestone-detail-text" id="fire-detail">Calculating...</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">PORTFOLIO GROWTH PROJECTION</h2>
+        <div class="graph-panel">
+            <canvas id="fireChart"></canvas>
+        </div>
+        <div class="assumptions">Assumptions: 7% Nominal Return, 2% Inflation. Withdrawal Rate: 4%. Projections are estimates.</div>
+    </div>
+
+    <script>
+        const GROWTH_RATE = 0.07;
+        const INFLATION_RATE = 0.02;
+        const SWR = 0.04;
+        const CURRENT_YEAR = new Date().getFullYear();
+
+        const inputs = {
+            age: document.getElementById('age'),
+            portfolio: document.getElementById('portfolio'),
+            spending: document.getElementById('spending'),
+            savings: document.getElementById('savings'),
+            targetAge: document.getElementById('targetAge')
+        };
+
+        const displays = {
+            age: document.getElementById('val-age'),
+            portfolio: document.getElementById('val-portfolio'),
+            spending: document.getElementById('val-spending'),
+            savings: document.getElementById('val-savings'),
+            targetAge: document.getElementById('val-targetAge')
+        };
+
+        let fireChart;
+
+        function formatK(num) {
+            if (num >= 1000000) return '$' + (num/1000000).toFixed(2) + 'M';
+            return '$' + (num/1000).toFixed(0) + 'k';
+        }
+        
+        function formatFull(num) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        }
+
+        function calculate() {
+            const age = parseInt(inputs.age.value);
+            const portfolio = parseInt(inputs.portfolio.value);
+            const spending = parseInt(inputs.spending.value);
+            const savings = parseInt(inputs.savings.value);
+            const targetAge = parseInt(inputs.targetAge.value);
+
+            displays.age.innerText = age;
+            displays.portfolio.innerText = formatK(portfolio);
+            displays.spending.innerText = formatK(spending);
+            displays.savings.innerText = formatK(savings);
+            displays.targetAge.innerText = targetAge;
+
+            let yearsToRetire = targetAge - age;
+            let fireTargetAtRetire = (spending * Math.pow(1 + INFLATION_RATE, yearsToRetire)) / SWR;
+
+            // 1. Coast FIRE Logic
+            let cYear = CURRENT_YEAR;
+            let cAge = age;
+            let isAlreadyCoast = (portfolio * Math.pow(1 + GROWTH_RATE, yearsToRetire) >= fireTargetAtRetire);
+            
+            if (!isAlreadyCoast) {
+                let simPort = portfolio;
+                for (let i = 1; i <= yearsToRetire; i++) {
+                    simPort = (simPort * (1 + GROWTH_RATE)) + savings;
+                    let remaining = targetAge - (age + i);
+                    if (simPort * Math.pow(1 + GROWTH_RATE, remaining) >= fireTargetAtRetire) {
+                        cYear = CURRENT_YEAR + i;
+                        cAge = age + i;
+                        break;
+                    }
+                }
+            }
+
+            document.getElementById('coast-year').innerText = isAlreadyCoast ? "Already There ✓" : "~" + cYear;
+            document.getElementById('coast-detail').innerHTML = isAlreadyCoast 
+                ? `Achieved at age <strong>${age}</strong>. You reach Coast FIRE when your assets, growing on their own, can hit your dynamic FIRE target of <strong>${formatK(fireTargetAtRetire)}</strong> at age ${targetAge}.`
+                : `Achieved at age <strong>~${cAge}</strong>. You reach Coast FIRE when your assets, growing on their own, can hit your dynamic FIRE target of <strong>${formatK(fireTargetAtRetire)}</strong> at age ${targetAge}.`;
+
+            // 2. Simulation for Barista & Full FIRE
+            let baristaYear = null, baristaAge = null, baristaPort = 0, baristaSWR = 0;
+            let fullYear = null, fullAge = null, fullPort = 0, fullTarget = 0;
+            
+            let port = portfolio;
+            let currentSpend = spending;
+            
+            const labels = [], portData = [], targetData = [];
+
+            for (let i = 0; i <= (85 - age); i++) {
+                let simYear = CURRENT_YEAR + i;
+                let simAge = age + i;
+                let currentTarget = currentSpend / SWR;
+                
+                labels.push(simYear);
+                portData.push(port);
+                targetData.push(currentTarget);
+
+                if (!baristaYear && port >= (currentTarget * 0.5)) {
+                    baristaYear = simYear;
+                    baristaAge = simAge;
+                    baristaPort = port;
+                    baristaSWR = port * SWR;
+                }
+                if (!fullYear && port >= currentTarget) {
+                    fullYear = simYear;
+                    fullAge = simAge;
+                    fullPort = port;
+                    fullTarget = currentTarget;
+                }
+
+                if (!fullYear) { port = (port * (1 + GROWTH_RATE)) + savings; } 
+                else { port = (port * (1 + GROWTH_RATE)); }
+                
+                currentSpend *= (1 + INFLATION_RATE);
+            }
+
+            // Update Barista UI
+            document.getElementById('barista-year').innerText = baristaYear ? "~" + baristaYear : "N/A";
+            document.getElementById('barista-detail').innerHTML = baristaYear 
+                ? `Portfolio hits <strong>~${formatK(baristaPort)}</strong>. This can support 4% spending of <strong>${formatFull(baristaSWR)}/yr</strong>. You hit this ${baristaYear - CURRENT_YEAR} years away at age ~${baristaAge}.`
+                : `Switch to part-time work covering 50% of spending. (Not yet achieved in simulation)`;
+
+            // Update Full FIRE UI
+            document.getElementById('fire-year').innerText = fullYear ? "~" + fullYear : "N/A";
+            document.getElementById('fire-detail').innerHTML = fullYear 
+                ? `Portfolio hits <strong>~${formatK(fullPort)}</strong>, exceeding your dynamic inflation-adjusted FIRE number of <strong>~${formatK(fullTarget)}</strong>. (Achieved at age ~${fullAge}).`
+                : `Never work again for money. (Not yet achieved in simulation)`;
+
+            updateChart(labels, portData, targetData);
+        }
+
+        function updateChart(labels, portData, targetData) {
+            const ctx = document.getElementById('fireChart').getContext('2d');
+            if (fireChart) fireChart.destroy();
+            fireChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Portfolio Value', data: portData, borderColor: '#303f9f', backgroundColor: 'rgba(48, 63, 159, 0.05)', fill: true, tension: 0.4, pointRadius: 0 },
+                        { label: 'FIRE Target', data: targetData, borderColor: '#999', borderDash: [5, 5], fill: false, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, suggestedMax: Math.max(...portData) * 1.1, ticks: { callback: v => formatK(v) } },
+                        x: { ticks: { maxTicksLimit: 12 } }
+                    },
+                    plugins: { legend: { position: 'top', align: 'end' } }
+                }
+            });
+        }
+
+        Object.values(inputs).forEach(input => input.addEventListener('input', calculate));
+        calculate();
+    </script>
+</body>
+</html>

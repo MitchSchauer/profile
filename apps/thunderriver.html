@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salmon River Tubing Predictor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans antialiased min-h-screen pb-12">
+
+  <div class="max-w-4xl mx-auto px-4 pt-8">
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400">Salmon River Tracker</h1>
+        <p class="text-sm text-gray-400 mt-1">Testing environment running client-side prediction heuristics.</p>
+      </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex gap-6 shrink-0 shadow-md">
+        <div>
+          <span class="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Live Flow (Pineville)</span>
+          <span id="live-cfs" class="text-2xl font-black text-emerald-400">Loading...</span>
+        </div>
+        <div class="border-l border-gray-800 pl-6">
+          <span class="block text-[10px] text-gray-500 uppercase tracking-widest font-bold">Local Sync Time</span>
+          <span id="sync-time" class="text-sm font-mono block mt-1.5 text-gray-300">--:--</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="text-xl font-bold text-gray-300 mb-4 flex items-center gap-2">
+        <span>🔮</span> 14-Day Optimal Window Predictions
+      </h2>
+      <div id="predictions-container" class="flex flex-col gap-3">
+        <div class="text-center py-12 text-gray-500 animate-pulse">Querying upstream APIs and processing telemetry matrices...</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+  const LAT = "43.5648";
+  const LON = "76.1258";
+  const USGS_SITE = "04250200"; 
+
+  function calculateTubingScore(temp, cloudCover, cfs) {
+    let score = 0;
+    if (temp >= 80) score += 35;
+    else if (temp >= 72) score += 20;
+    else score += 5;
+
+    if (cloudCover >= 60 && cloudCover <= 90) score += 35; 
+    else if (cloudCover > 90) score += 20; 
+    else if (cloudCover >= 30 && cloudCover < 60) score += 15;
+    else score += 5; 
+
+    if (cfs >= 350 && cfs <= 600) score += 30;
+    else if (cfs >= 200 && cfs < 350) score += 15;
+    else score += 5;
+
+    return score;
+  }
+
+  async function runPipeline() {
+    const container = document.getElementById('predictions-container');
+    
+    // 1. Fetch Weather Data
+    let weatherData = null;
+    try {
+      console.log("STEP 1: Fetching weather data from Open-Meteo...");
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,cloud_cover&temperature_unit=fahrenheit&forecast_days=14&timezone=America%2FNew_York`;
+      const weatherRes = await fetch(weatherUrl);
+      weatherData = await weatherRes.json();
+      console.log("STEP 1 SUCCESS: Weather payload downloaded.");
+    } catch (err) {
+      console.error("STEP 1 FAILED: Open-Meteo network drop.", err);
+      container.innerHTML = `<div class="p-4 bg-red-950 text-red-400 font-mono">Failed fetching weather telemetry: ${err.message}</div>`;
+      return;
+    }
+
+    // 2. Fetch Live River Flow (with an immediate safe fallback if it hangs)
+    let liveCfs = "250"; // Fallback default
+    try {
+      console.log("STEP 2: Fetching live river flow via proxy...");
+      const usgsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(
+        `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${USGS_SITE}&parameterCd=00060&siteStatus=all`
+      )}`;
+      
+      // Set a strict 4-second network timeout so the application never hangs permanently
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+      const usgsRes = await fetch(usgsUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
+      const proxyData = await usgsRes.json();
+      console.log("STEP 2 SUCCESS: Proxy data received. Parsing contents...");
+
+      if (proxyData && proxyData.contents) {
+        const usgsData = JSON.parse(proxyData.contents);
+        const timeSeries = usgsData.value.timeSeries;
+        const cfsReading = timeSeries.find(s => s.variable.variableCode[0].value === '00060');
+        liveCfs = cfsReading.values[0].value.pop().value;
+        console.log(`STEP 2 PARSE SUCCESS: Live flow is ${liveCfs} CFS`);
+      }
+    } catch (err) {
+      console.warn("STEP 2 BYPASSED: USGS stream blocked or timed out. Defaulting to baseflow (250 CFS). Error:", err.message);
+    }
+
+    // 3. Run Calculations & Render UI
+    try {
+      console.log("STEP 3: Running predictive scoring matrix calculations...");
+      const hourly = weatherData.hourly;
+      const dailyPredictions = [];
+      const processedDays = new Set();
+
+      for (let i = 0; i < hourly.time.length; i++) {
+        const dateObj = new Date(hourly.time[i]);
+        const hour = dateObj.getHours();
+        const dateKey = dateObj.toDateString();
+
+        if (hour === 14 && !processedDays.has(dateKey)) {
+          processedDays.add(dateKey);
+
+          const temp = hourly.temperature_2m[i];
+          const cloudCover = hourly.cloud_cover[i];
+
+          let predictedCfs = 250;
+          if (temp > 84) predictedCfs = 550;
+          else if (temp > 78) predictedCfs = 350;
+
+          const score = calculateTubingScore(temp, cloudCover, predictedCfs);
+
+          dailyPredictions.push({
+            date: dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+            score,
+            temp: Math.round(temp),
+            cloudCover,
+            predictedCfs,
+            conditionLabel: cloudCover >= 60 ? "Overcast & Hot ☁️" : "Clear & Sunny ☀️"
+          });
+        }
+      }
+
+      dailyPredictions.sort((a, b) => b.score - a.score);
+
+      document.getElementById('live-cfs').innerText = `${liveCfs} CFS`;
+      document.getElementById('sync-time').innerText = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      container.innerHTML = dailyPredictions.map(day => {
+        let scoreColor = "bg-red-500";
+        if (day.score >= 75) scoreColor = "bg-emerald-500";
+        else if (day.score >= 50) scoreColor = "bg-amber-500";
+
+        return `
+          <div class="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4 w-full md:w-auto">
+              <div class="${scoreColor} text-gray-900 font-black text-xl rounded-lg h-14 w-14 flex items-center justify-center shrink-0 shadow-inner">
+                ${day.score}
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-gray-100">${day.date}</h3>
+                <p class="text-xs text-gray-400 font-mono tracking-wider">${day.conditionLabel}</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-6 w-full md:w-auto text-center md:text-right">
+              <div>
+                <span class="block text-xs text-gray-500 uppercase tracking-wider font-semibold">Temp</span>
+                <span class="text-xl font-bold text-orange-400">${day.temp}°F</span>
+              </div>
+              <div>
+                <span class="block text-xs text-gray-500 uppercase tracking-wider font-semibold">Clouds</span>
+                <span class="text-xl font-bold text-sky-400">${day.cloudCover}%</span>
+              </div>
+              <div>
+                <span class="block text-xs text-gray-500 uppercase tracking-wider font-semibold">Est. Flow</span>
+                <span class="text-xl font-bold text-teal-400">${day.predictedCfs} <span class="text-xs">CFS</span></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      console.log("STEP 3 SUCCESS: UI layout rendering complete.");
+    } catch (err) {
+      console.error("CRITICAL CALCULATION EXCEPTION:", err);
+      container.innerHTML = `<div class="p-4 bg-red-950 text-red-400 font-mono">Calculation Engine Error: ${err.message}</div>`;
+    }
+  }
+
+  runPipeline();
+</script>
+
+</body>
+</html>

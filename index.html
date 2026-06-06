@@ -234,7 +234,7 @@ input.addEventListener("keydown", function(e){
     const cmd = input.value.trim().toLowerCase();
     output.innerHTML += "&gt; " + cmd + "<br>";
     if(cmd === "help"){
-      output.innerHTML += "Commands: resume, github, linkedin, lab, clear<br>";
+      output.innerHTML += "Commands: resume, github, linkedin, lab, fire, thunderriver, clear<br>";
     } 
     else if(cmd === "resume"){
       window.open("resume.pdf","_blank");
@@ -244,6 +244,12 @@ input.addEventListener("keydown", function(e){
     }
     else if(cmd === "linkedin"){
       window.open("https://linkedin.com/in/mitch-schauer","_blank");
+    }
+    else if(cmd === "thunderriver"){
+      window.open("apps/thunderriver.html", "_blank");
+    }
+    else if(cmd === "fire"){
+      window.open("apps/fire.html", "_blank");
     }
     else if(cmd === "lab"){
       output.innerHTML += "Mobile Node: Proxmox HA | 16TB RAIDZ2 | WireGuard SDN | Offline LLM<br>";
